@@ -1,0 +1,29 @@
+# Part 1
+
+# Setup 2 machinse:
+#	One that will be a Server (S)
+#	The other that will be a Server Worker (SW)
+
+# Both need to have K3s installed on it
+
+Vagrant.configure("2") do |config|
+	config.vm.box = "debian/buster64"
+
+	# Server
+	config.vm.define "nguairdS" do |control|
+		control.vm.hostname = "nguairdS"
+
+		config.vm.provider "virtualbox" do |vb|
+			vb.memory = "512"
+		end
+	end
+
+	# ServerWorker
+	config.vm.define "nguairdSW" do |control|
+		control.vm.hostname = "nguairdSW"
+
+		config.vm.provider "virtualbox" do |vb|
+			vb.memory = "512"
+		end
+	end
+end
