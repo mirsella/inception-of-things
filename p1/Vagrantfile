@@ -10,20 +10,42 @@ Vagrant.configure("2") do |config|
 	config.vm.box = "debian/buster64"
 
 	# Server
-	config.vm.define "nguairdS" do |control|
-		control.vm.hostname = "nguairdS"
+	config.vm.define "nguiardS" do |server|
+		server.vm.hostname = "nguiardS"
+		server.vm.network "private_network", ip: "192.168.56.110"
 
-		config.vm.provider "virtualbox" do |vb|
-			vb.memory = "512"
+		# Disable file synchronization with the VM
+		server.vm.synced_folder "synced", "/vagrant"#, type: "virtualbox"
+
+		server.vm.provision "file",
+			source: "scripts/Server.sh",
+			destination: "/home/vagrant/script.sh"
+
+		server.vm.provision "shell",
+			inline: "/bin/sh /home/vagrant/script.sh > /home/vagrant/logs.txt 2>&1"
+
+		server.vm.provider "virtualbox" do |vb|
+			vb.memory = "1024" #WARNING -> CHANGE WHEN EVERYTHING IS OK
 		end
 	end
 
 	# ServerWorker
-	config.vm.define "nguairdSW" do |control|
-		control.vm.hostname = "nguairdSW"
+	config.vm.define "nguiardSW" do |serverworker|
+		serverworker.vm.hostname = "nguiardSW"
+		serverworker.vm.network "private_network", ip: "192.168.56.111"
 
-		config.vm.provider "virtualbox" do |vb|
-			vb.memory = "512"
+		# Disable file synchronization with the VM
+		serverworker.vm.synced_folder "synced", "/vagrant"#, type: "virtualbox"
+
+		serverworker.vm.provision "file",
+			source: "scripts/ServerWorker.sh",
+			destination: "/home/vagrant/script.sh"
+
+		serverworker.vm.provision "shell",
+			inline: "/bin/sh /home/vagrant/script.sh > /home/vagrant/logs.txt 2>&1"
+
+		serverworker.vm.provider "virtualbox" do |vb|
+			vb.memory = "1024" #WARNING -> CHANGE WHEN EVERYTHING IS OK
 		end
 	end
 end
