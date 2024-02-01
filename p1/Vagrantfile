@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
 		server.vm.network "private_network", ip: "192.168.56.110"
 
 		# Disable file synchronization with the VM
-		server.vm.synced_folder "synced", "/vagrant"#, type: "virtualbox"
+		server.vm.synced_folder "synced", "/vagrant"
 
 		server.vm.provision "file",
 			source: "scripts/Server.sh",
@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
 		serverworker.vm.network "private_network", ip: "192.168.56.111"
 
 		# Disable file synchronization with the VM
-		serverworker.vm.synced_folder "synced", "/vagrant"#, type: "virtualbox"
+		serverworker.vm.synced_folder "synced", "/vagrant"
 
 		serverworker.vm.provision "file",
 			source: "scripts/ServerWorker.sh",
