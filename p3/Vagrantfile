@@ -1,0 +1,17 @@
+# dev vm
+
+Vagrant.configure("2") do |config|
+	config.vm.box = "debian/bookworm64"
+
+  config.vm.provider "virtualbox" do |v|
+      v.memory = 4096
+      v.cpus = 4
+  end
+
+	# Server
+	config.vm.define "iot" do |server|
+		server.vm.hostname = "iot"
+
+    server.vm.provision "shell", path: "./scripts/installation.sh", name: "installation"
+  end
+end
