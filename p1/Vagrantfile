@@ -6,46 +6,38 @@
 
 # Both need to have K3s installed on it
 
+SERVER_NAME = "nguiardS"
+SERVER_IP = "192.168.56.110"
+WORKER_NAME = "nguiardSW"
+WORKER_IP = "192.168.56.111"
+
 Vagrant.configure("2") do |config|
-	config.vm.box = "debian/buster64"
+	config.vm.box = "debian/bookworm64"
+
+  # common for all vagrant boxes
+  config.vm.provider "virtualbox" do |v|
+      v.memory = 2048
+      v.cpus = 2
+  end
 
 	# Server
-	config.vm.define "nguiardS" do |server|
-		server.vm.hostname = "nguiardS"
-		server.vm.network "private_network", ip: "192.168.56.110"
+	config.vm.define SERVER_NAME do |server|
+		server.vm.hostname = SERVER_NAME
+		server.vm.network "private_network", ip: SERVER_IP
 
-		# Disable file synchronization with the VM
-		server.vm.synced_folder "synced", "/vagrant"
-
-		server.vm.provision "file",
-			source: "scripts/Server.sh",
-			destination: "/home/vagrant/script.sh"
-
-		server.vm.provision "shell",
-			inline: "/bin/sh /home/vagrant/script.sh > /home/vagrant/logs.txt 2>&1"
-
-		server.vm.provider "virtualbox" do |vb|
-			vb.memory = "1024" #WARNING -> CHANGE WHEN EVERYTHING IS OK
-		end
-	end
+    server.vm.provision "shell",
+      path: "scripts/Server.sh",
+      env: {"SERVER_IP" => SERVER_IP}
+  end
 
 	# ServerWorker
-	config.vm.define "nguiardSW" do |serverworker|
-		serverworker.vm.hostname = "nguiardSW"
-		serverworker.vm.network "private_network", ip: "192.168.56.111"
+	config.vm.define WORKER_NAME do |serverworker|
+		serverworker.vm.hostname = WORKER_NAME
+		serverworker.vm.network "private_network", ip: WORKER_IP
 
-		# Disable file synchronization with the VM
-		serverworker.vm.synced_folder "synced", "/vagrant"
+    serverworker.vm.provision "shell",
+      path: "scripts/ServerWorker.sh",
+      env: {"SERVER_IP" => SERVER_IP}
 
-		serverworker.vm.provision "file",
-			source: "scripts/ServerWorker.sh",
-			destination: "/home/vagrant/script.sh"
-
-		serverworker.vm.provision "shell",
-			inline: "/bin/sh /home/vagrant/script.sh > /home/vagrant/logs.txt 2>&1"
-
-		serverworker.vm.provider "virtualbox" do |vb|
-			vb.memory = "1024" #WARNING -> CHANGE WHEN EVERYTHING IS OK
-		end
-	end
+  end
 end
