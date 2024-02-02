@@ -8,17 +8,10 @@
 
 SERVER_NAME = "nguiardS"
 SERVER_IP = "192.168.56.110"
-APP1_NAME = "app-one"
-APP1_IP = "192.168.56.111"
-APP2_NAME = "app-two"
-APP2_IP = "192.168.56.112"
-APP3_NAME = "app-three"
-APP3_IP = "192.168.56.113"
 
 Vagrant.configure("2") do |config|
 	config.vm.box = "debian/bookworm64"
 
-  # common for all vagrant boxes
   config.vm.provider "virtualbox" do |v|
       v.memory = 1024
       v.cpus = 1
@@ -27,41 +20,13 @@ Vagrant.configure("2") do |config|
 	# Server
 	config.vm.define SERVER_NAME do |server|
 		server.vm.hostname = SERVER_NAME
+    server.vm.network "forwarded_port", guest: 80, host: 8080
 		server.vm.network "private_network", ip: SERVER_IP
 
-    server.vm.provision "shell",
-      path: "scripts/Server.sh",
-      env: {"SERVER_IP" => SERVER_IP}
+    server.vm.provision "shell", path: "scripts/Server.sh"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/app1.yaml"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/app2.yaml"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/app3.yaml"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/ingress.yaml"
   end
-
-	# App1
-	config.vm.define APP1_NAME do |app_one|
-		app_one.vm.hostname = APP1_NAME
-		app_one.vm.network "private_network", ip: APP1_IP
-
-    app_one.vm.provision "shell",
-      path: "scripts/app_one.sh",
-      env: {"SERVER_IP" => SERVER_IP}
-  end
-
-  	# App2
-	config.vm.define APP2_NAME do |app_two|
-		app_two.vm.hostname = APP2_NAME
-		app_two.vm.network "private_network", ip: APP2_IP
-
-    app_two.vm.provision "shell",
-      path: "scripts/app_two.sh",
-      env: {"SERVER_IP" => SERVER_IP}
-  end
-
-  	# App3
-	config.vm.define APP3_NAME do |app_three|
-		app_three.vm.hostname = APP3_NAME
-		app_three.vm.network "private_network", ip: APP3_IP
-
-    app_three.vm.provision "shell",
-      path: "scripts/app_three.sh",
-      env: {"SERVER_IP" => SERVER_IP}
-  end
-
 end
