@@ -11,7 +11,9 @@ Vagrant.configure("2") do |config|
 	# Server
 	config.vm.define "iot" do |server|
 		server.vm.hostname = "iot"
+    server.vm.network "forwarded_port", guest: 8080, host: 8080
 
     server.vm.provision "shell", path: "./scripts/installation.sh", name: "installation"
+    server.vm.provision "shell", path: "./scripts/setup.sh", name: "setup"
   end
 end

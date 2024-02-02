@@ -3,8 +3,8 @@
 # Depedencies of the 3rd part
 
 if [ $(whoami) != root ]; then
-	echo You must be root. Aborting
-	exit 1
+	sudo "$0"
+	exit 0
 fi
 
 # Add Docker's official GPG key:
