@@ -12,6 +12,10 @@ curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" \
 	sh -
 sudo cp -v /var/lib/rancher/k3s/server/node-token /vagrant/
 
-echo "sudo kubectl get node -o wide" >>~/.bashrc
+echo "
+echo
+echo 'kubectl get node -o wide: '
+sudo kubectl get node -o wide
+" >>/home/vagrant/.bashrc
 
 echo "\033[1;3;34m--- Server script finished ---\033[0m"
