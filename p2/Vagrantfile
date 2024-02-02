@@ -24,8 +24,9 @@ Vagrant.configure("2") do |config|
 		server.vm.network "private_network", ip: SERVER_IP
 
     server.vm.provision "shell", path: "scripts/Server.sh"
-    server.vm.provision "shell",
-      inline: "sudo kubectl apply -f /vagrant/config.yaml",
-      name: "apply-config"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/app1.yaml"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/app2.yaml"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/app3.yaml"
+    server.vm.provision "shell", inline: "sudo kubectl apply -f /vagrant/ingress.yaml"
   end
 end
