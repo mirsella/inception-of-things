@@ -14,7 +14,7 @@ if ! command -v kubectl &>/dev/null; then
 	exit
 fi
 
-k3d cluster create -p 80:80@loadbalancer -p 443:443@loadbalancer
+k3d cluster create --port 8888:8888
 
 kubectl create namespace argocd
 kubectl create namespace dev
@@ -30,5 +30,16 @@ echo "ArgoCD password:"
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode
 echo
 
-kubectl port-forward -n argocd service/argocd-server --address 0.0.0.0 8080:443 &
-disown
+if [ -f /vagrant/scripts/port-forward.sh ]; then
+	bash /vagrant/scripts/port-forward.sh
+else
+	bash "$(dirname "$0")/port-forward.sh"
+fi
+
+if [ -f /vagrant/argocd-deploy.yml ]; then
+	kubectl apply -f /vagrant/argocd-deploy.yml -n argocd
+else
+	kubectl apply -f "$(dirname "$0")/argocd-deploy.yml" -n argocd
+fi
+
+sleep 60

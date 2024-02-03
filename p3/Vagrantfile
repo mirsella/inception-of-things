@@ -1,5 +1,3 @@
-# dev vm
-
 Vagrant.configure("2") do |config|
 	config.vm.box = "debian/bookworm64"
 
@@ -8,12 +6,11 @@ Vagrant.configure("2") do |config|
       v.cpus = 4
   end
 
-	# Server
-	config.vm.define "iot" do |server|
-		server.vm.hostname = "iot"
-    server.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 8888, host: 8888
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
 
-    server.vm.provision "shell", path: "./scripts/installation.sh", name: "installation"
-    server.vm.provision "shell", path: "./scripts/setup.sh", name: "setup"
-  end
+  config.vm.provision "shell", path: "./scripts/installation.sh", name: "installation"
+  config.vm.provision "shell", path: "./scripts/setup.sh", name: "setup"
+  config.vm.provision "shell", path: "./scripts/port-forward.sh", name: "port-forward", run: "always"
+
 end

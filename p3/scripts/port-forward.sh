@@ -5,5 +5,4 @@ if [ $(whoami) != root ]; then
 	exit
 fi
 
-kubectl port-forward -n argocd service/argocd-server --address 0.0.0.0 8080:443 &
-disown
+kubectl port-forward service/argocd-server --address 0.0.0.0 -n argocd 8080:443 2>&1 >/dev/null &
