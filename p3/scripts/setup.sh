@@ -1,17 +1,16 @@
 #!/bin/bash
 
 if [ $(whoami) != root ]; then
-	sudo bash "$0"
-	exit
+	exit $(sudo bash "$0")
 fi
 
 if ! command -v k3d &>/dev/null; then
 	echo "k3d could not be found"
-	exit
+	exit 1
 fi
 if ! command -v kubectl &>/dev/null; then
 	echo "kubectl could not be found"
-	exit
+	exit 1
 fi
 
 k3d cluster create --port 8888:8888
@@ -30,16 +29,14 @@ echo "ArgoCD password:"
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode
 echo
 
-if [ -f /vagrant/scripts/port-forward.sh ]; then
-	bash /vagrant/scripts/port-forward.sh
-else
+if [ ! -d /vagrant ]; then
 	bash "$(dirname "$0")/port-forward.sh"
 fi
 
-if [ -f /vagrant/argocd-deploy.yml ]; then
-	kubectl apply -f /vagrant/argocd-deploy.yml -n argocd
+if [ -f /vagrant/confs/argocd-deploy.yml ]; then
+	kubectl apply -f /vagrant/confs/argocd-deploy.yml -n argocd
 else
-	kubectl apply -f "$(dirname "$0")/argocd-deploy.yml" -n argocd
+	kubectl apply -f "$(dirname "$0")/../confs/argocd-deploy.yml" -n argocd
 fi
 
 sleep 60
