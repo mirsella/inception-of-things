@@ -8,7 +8,7 @@ fi
 run() {
 	echo -e "\033[1;34m--- INSTALLATION ---\033[0m"
 	if which k3d && which kubectl && \
-		which docker && which helm
+		which docker && which helm && which gitlab
 	then
 		echo "Everything seem to be already installed, skipping installation."
 	else
@@ -40,6 +40,7 @@ clean() {
 	apt-get remove -y docker-ce docker-ce-cli containerd.io \
 		docker-buildx-plugin docker-compose-plugin
 	apt autoremove -y
+	gem uninstall -x gitlab
 }
 
 if [ -z "$1" ]

@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mirsella/iot-wil-app-lgillard
+    repoURL: http://host.k3d.internal:8181/root/service
     path: .
   destination:
     server: https://kubernetes.default.svc
