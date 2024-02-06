@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [ $(whoami) != root ]; then
-	exit $(sudo bash "$0")
+	sudo bash "$0"
+	exit $?
 fi
 
 apt-get update -y

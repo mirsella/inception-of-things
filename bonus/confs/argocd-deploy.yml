@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: http://host.k3d.internal:8181/root/service
+    repoURL: http://gitlab-webservice-default.gitlab.svc:8181/root/service
     path: .
   destination:
     server: https://kubernetes.default.svc
