@@ -34,3 +34,6 @@ chmod +x /usr/local/bin/kubectl
 
 # Install Helm
 curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Install gitlab
+gem install gitlab
