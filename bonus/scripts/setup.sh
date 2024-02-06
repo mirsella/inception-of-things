@@ -32,8 +32,8 @@ helm upgrade --install gitlab gitlab/gitlab \
 	--values confs/gitlab.yaml \
 	-n gitlab
 
-echo -e '\n\033[32mWaiting for Gitlab to be ready (10min)\033[0m'
-kubectl wait --timeout=600s --for=condition=Ready -n gitlab --all pod
+echo -e '\n\033[32mWaiting for Gitlab to be ready (5min)\033[0m'
+kubectl wait --timeout=300s --for=condition=Ready -n gitlab --all pod
 echo 'Port forwarding Gitlab 8181:8181'
 kubectl port-forward service/gitlab-webservice-default --address 0.0.0.0 -n gitlab 8181:8181 2>/dev/null >/dev/null &
 

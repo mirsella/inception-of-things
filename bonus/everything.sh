@@ -38,7 +38,6 @@ clean() {
 	apt-get remove -y docker-ce docker-ce-cli containerd.io \
 		docker-buildx-plugin docker-compose-plugin
 	apt autoremove -y
-	gem uninstall -x gitlab
 }
 
 if [ -z "$1" ]; then
@@ -63,7 +62,7 @@ if [ -z "$1" ]; then
 			exit
 			;;
 		*)
-			echo -e 'Choose from:\nrun (1)\nstop (2)\nclean (3)'
+			echo -e 'Choose from:\nrun (1)\nport (2)\nstop (3)\nclean (4)'
 			;;
 		esac
 	done
