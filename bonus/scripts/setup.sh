@@ -38,12 +38,14 @@ helm upgrade --install gitlab gitlab/gitlab \
 	-n gitlab
 
 echo -e '\n\033[32mWaiting for Gitlab to be ready (5min)\033[0m'
-kubectl wait --timeout=300s --for=condition=Ready -n gitlab --all pod
+# kubectl wait --timeout=300s --for=condition=Ready -n gitlab --all pod
+kubectl wait --timeout=300s --for=condition=Ready -n gitlab -l app=webservice pod
 echo 'Port forwarding Gitlab 8181:8181'
 kubectl port-forward service/gitlab-webservice-default --address 0.0.0.0 -n gitlab 8181:8181 2>/dev/null >/dev/null &
 
 bash scripts/repo.sh
 
+kubectl apply -f confs/argocd-cm.yml -n argocd
 kubectl apply -f confs/argocd-deploy.yml -n argocd
 
 # Passwords
