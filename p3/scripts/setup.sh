@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ $(whoami) != root ]; then
+
 	exit $(sudo bash "$0")
 fi
 

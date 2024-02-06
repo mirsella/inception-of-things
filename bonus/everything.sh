@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [ $(whoami) != root ]; then
-	echo 'You must be root'
 	exit $(sudo bash "$0" $@)
 fi
 
