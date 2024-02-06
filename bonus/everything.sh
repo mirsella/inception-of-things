@@ -2,14 +2,13 @@
 
 if [ $(whoami) != root ]; then
 	echo 'You must be root'
-	exit 1
+	exit $(sudo bash "$0" $@)
 fi
 
 run() {
 	echo -e "\033[1;34m--- INSTALLATION ---\033[0m"
-	if which k3d && which kubectl && \
-		which docker && which helm
-	then
+	if which k3d && which kubectl &&
+		which docker && which helm; then
 		echo "Everything seem to be already installed, skipping installation."
 	else
 		bash scripts/installation.sh
@@ -42,32 +41,45 @@ clean() {
 	apt autoremove -y
 }
 
-if [ -z "$1" ]
-then
+if [ -z "$1" ]; then
 	PS3="> "
-	select option in run stop clean
-	do
+	select option in run stop clean; do
 		echo $option
 		case $option in
-			"run")
-				run; exit;;
-			"stop")
-				stop; exit;;
-			"clean")
-				clean; exit;;
-			*)
-				echo -e 'Choose from:\nrun (1)\nstop (2)\nclean (3)';;
+		"run")
+			run
+			exit
+			;;
+		"stop")
+			stop
+			exit
+			;;
+		"clean")
+			clean
+			exit
+			;;
+		*)
+			echo -e 'Choose from:\nrun (1)\nstop (2)\nclean (3)'
+			;;
 		esac
 	done
 else
 	case $1 in
-		"run")
-			run; exit;;
-		"stop")
-			stop; exit;;
-		"clean")
-			clean; exit;;
-		*)
-			echo "Choose from: run/stop/clean"; exit 1;;
+	"run")
+		run
+		exit
+		;;
+	"stop")
+		stop
+		exit
+		;;
+	"clean")
+		clean
+		exit
+		;;
+	*)
+		echo "Choose from: run/stop/clean"
+		exit 1
+		;;
 	esac
 fi
