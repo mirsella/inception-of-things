@@ -6,9 +6,8 @@ fi
 
 run() {
 	echo -e "\033[1;34m--- INSTALLATION ---\033[0m"
-	if which k3d && which kubectl && \
-		which docker && which helm && which gitlab
-	then
+	if which k3d && which kubectl &&
+		which docker && which helm && which gitlab; then
 		echo "Everything seem to be already installed, skipping installation."
 	else
 		bash scripts/installation.sh
@@ -44,11 +43,15 @@ clean() {
 
 if [ -z "$1" ]; then
 	PS3="> "
-	select option in run stop clean; do
+	select option in run port stop clean; do
 		echo $option
 		case $option in
 		"run")
 			run
+			exit
+			;;
+		"port")
+			bash scripts/port-forwarding.sh
 			exit
 			;;
 		"stop")
@@ -70,6 +73,10 @@ else
 		run
 		exit
 		;;
+	"port")
+		bash scripts/port-forwarding.sh
+		exit
+		;;
 	"stop")
 		stop
 		exit
@@ -79,7 +86,7 @@ else
 		exit
 		;;
 	*)
-		echo "Choose from: run/stop/clean"
+		echo "Choose from: run/port/stop/clean"
 		exit 1
 		;;
 	esac

@@ -12,5 +12,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", path: "./scripts/installation.sh", name: "installation"
   config.vm.provision "shell", path: "./scripts/setup.sh", name: "setup"
+  config.vm.provision "shell", path: "./scripts/port-forwarding.sh", name: "setup", run: "always"
 
 end

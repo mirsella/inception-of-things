@@ -13,7 +13,6 @@ if ! command -v kubectl &>/dev/null; then
 	exit 1
 fi
 
-
 k3d cluster create bonus --port 8888:8888
 
 kubectl create namespace argocd
@@ -29,9 +28,9 @@ sleep 10
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
 helm upgrade --install gitlab gitlab/gitlab \
-  --timeout 600s \
-  --values confs/gitlab.yaml \
-  -n gitlab
+	--timeout 600s \
+	--values confs/gitlab.yaml \
+	-n gitlab
 
 echo -e '\n\033[32mWaiting for Gitlab to be ready (10min)\033[0m'
 kubectl wait --timeout=600s --for=condition=Ready -n gitlab --all pod
@@ -40,24 +39,20 @@ kubectl port-forward service/gitlab-webservice-default --address 0.0.0.0 -n gitl
 
 bash scripts/repo.sh
 
-if [ -f /vagrant/confs/argocd-deploy.yml ]; then
-	kubectl apply -f /vagrant/confs/argocd-deploy.yml -n argocd
-else
-	kubectl apply -f "$(dirname "$0")/../confs/argocd-deploy.yml" -n argocd
-fi
+kubectl apply -f confs/argocd-deploy.yml -n argocd
 
 # Passwords
 kubectl wait --timeout=200s --for=condition=Ready -n argocd --all pod
 # https://stackoverflow.com/questions/68297354/what-is-the-default-password-of-argocd
 echo -e "\033[1mArgoCD password:"
-kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode > argoCD.password
-echo >> argoCD.password
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode >argoCD.password
+echo >>argoCD.password
 cat argoCD.password
 echo -e "Saved to argoCD.password\033[0m"
 
 echo -e "\033[1mGitlab password:"
-kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -o jsonpath="{.data.password}" | base64 --decode > gitlab.password
-echo >> gitlab.password
+kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -o jsonpath="{.data.password}" | base64 --decode >gitlab.password
+echo >>gitlab.password
 cat gitlab.password
 echo -e "Saved to gitlab.password\033[0m"
 
