@@ -13,6 +13,10 @@ if ! command -v kubectl &>/dev/null; then
 	exit 1
 fi
 
+if [ -d /vagrant ]; then
+	cd /vagrant
+fi
+
 k3d cluster create bonus --port 8888:8888
 
 kubectl create namespace argocd
@@ -32,8 +36,8 @@ helm upgrade --install gitlab gitlab/gitlab \
 	--values confs/gitlab.yaml \
 	-n gitlab
 
-echo -e '\n\033[32mWaiting for Gitlab to be ready (10min)\033[0m'
-kubectl wait --timeout=600s --for=condition=Ready -n gitlab --all pod
+echo -e '\n\033[32mWaiting for Gitlab to be ready (5min)\033[0m'
+kubectl wait --timeout=300s --for=condition=Ready -n gitlab --all pod
 echo 'Port forwarding Gitlab 8181:8181'
 kubectl port-forward service/gitlab-webservice-default --address 0.0.0.0 -n gitlab 8181:8181 2>/dev/null >/dev/null &
 
@@ -43,7 +47,6 @@ kubectl apply -f confs/argocd-deploy.yml -n argocd
 
 # Passwords
 kubectl wait --timeout=200s --for=condition=Ready -n argocd --all pod
-# https://stackoverflow.com/questions/68297354/what-is-the-default-password-of-argocd
 echo -e "\033[1mArgoCD password:"
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode >argoCD.password
 echo >>argoCD.password
