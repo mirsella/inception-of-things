@@ -13,6 +13,10 @@ if ! command -v kubectl &>/dev/null; then
 	exit 1
 fi
 
+if [ -d /vagrant ]; then
+	cd /vagrant
+fi
+
 k3d cluster create bonus --port 8888:8888
 
 kubectl create namespace argocd
@@ -43,7 +47,6 @@ kubectl apply -f confs/argocd-deploy.yml -n argocd
 
 # Passwords
 kubectl wait --timeout=200s --for=condition=Ready -n argocd --all pod
-# https://stackoverflow.com/questions/68297354/what-is-the-default-password-of-argocd
 echo -e "\033[1mArgoCD password:"
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode >argoCD.password
 echo >>argoCD.password
