@@ -9,6 +9,13 @@ Infrastructure learning repo built around Vagrant, K3s, K3d, and Argo CD.
 - `p3`: K3d + Argo CD setup.
 - `bonus`: extended local setup with GitLab.
 
+## What Each Part Covers
+
+- `p1` is the basic cluster exercise: bootstrap K3s on one VM and join a worker.
+- `p2` moves to app deployment and hostname-based ingress.
+- `p3` introduces GitOps with Argo CD on top of a local K3d cluster.
+- `bonus` expands the setup with a local GitLab instance and extra automation scripts.
+
 ## Run a part
 
 ```bash
@@ -24,3 +31,9 @@ Use the same pattern for `p2` and `p3`.
 cd bonus
 sudo bash everything.sh run
 ```
+
+## Notes
+
+- These setups are meant for local learning labs, not production deployment.
+- IPs, forwarded ports, and some repo references are hardcoded for convenience.
+- Some helper scripts in `bonus/` are destructive and remove local tooling or clusters.
